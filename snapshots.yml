@@ -8,7 +8,7 @@
   tasks:
     - name: Find EC2 instances that have volumes to snapshot
       ec2_remote_facts:
-        region: 'us-east-1'
+        region: "{{ lookup('env', 'AWS_REGION') | default('us-east-1', true) }}"
         filters:
           instance-state-name: running
           "tag:EBS_backup": 'true'
@@ -17,12 +17,14 @@
     - name: Find all attached volumes
       ec2_vol:
         instance: "{{ item.id }}"
+        region: "{{ lookup('env', 'AWS_REGION') | default('us-east-1', true) }}"
         state: list
       with_items: "{{ ec2.instances }}"
       register: ec2_vol
 
     - name: 'Take a snapshot'
       ec2_snapshot:
+        region: "{{ lookup('env', 'AWS_REGION') | default('us-east-1', true) }}"
         instance_id: "{{ attachment_set.instance_id }}"
         description: "EBS volume backup of {{ attachment_set.device }} from {{ attachment_set.instance_id }}"
         device_name: "{{ attachment_set.device }}"
