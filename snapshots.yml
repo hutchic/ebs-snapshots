@@ -1,0 +1,37 @@
+---
+- hosts: '127.0.0.1'
+  connection: 'local'
+  vars:
+    ghe_env:
+      SNAPSHOTS_OLDER_THAN_DAYS: 3
+
+  tasks:
+    - name: Find EC2 instances that have volumes to snapshot
+      ec2_remote_facts:
+        region: 'us-east-1'
+        filters:
+          instance-state-name: running
+          "tag:EBS_backup": 'true'
+      register: ec2
+
+    - name: Find all attached volumes
+      ec2_vol:
+        instance: "{{ item.id }}"
+        state: list
+      with_items: "{{ ec2.instances }}"
+      register: ec2_vol
+
+    - name: 'Take a snapshot'
+      ec2_snapshot:
+        instance_id: "{{ attachment_set.instance_id }}"
+        description: "EBS volume backup of {{ attachment_set.device }} from {{ attachment_set.instance_id }}"
+        device_name: "{{ attachment_set.device }}"
+        wait: true
+        snapshot_tags:
+          frequency: daily
+          auto_expire: true
+      with_items: "{{ ec2_vol.volumes }}"
+
+    - name: 'Delete older Github Enterprise snapshots'
+      environment: "{{ ghe_env }}"
+      command: 'python github_snapshots.py'
