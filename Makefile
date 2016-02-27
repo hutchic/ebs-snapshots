@@ -1,10 +1,12 @@
-.PHONY: snapshots
+.PHONY: clean install snapshots
 SHELL = /bin/bash
 
-snapshots:
-	docker build -t snapshotmanager .
-	docker run \
-		-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-		-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-		snapshotmanager \
-		ansible-playbook snapshots.yml
+clean:
+	rm -rf venv
+
+install:
+	test -d venv || virtualenv venv
+	venv/bin/pip install -r requirements.txt
+
+snapshots: install
+	venv/bin/ansible-playbook snapshots.yml
