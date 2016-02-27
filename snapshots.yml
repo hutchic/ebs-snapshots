@@ -2,6 +2,7 @@
 - hosts: '127.0.0.1'
   connection: 'local'
   vars:
+    ansible_python_interpreter: "venv/bin/python"
     ghe_env:
       SNAPSHOTS_OLDER_THAN_DAYS: 3
 
@@ -31,6 +32,10 @@
         volume: "{{ item }}"
       with_items: "{{ volumes }}"
 
+    - name: Find out playbook's path
+      shell: pwd
+      register: playbook_path_output
+
     - name: 'Delete older Github Enterprise snapshots'
       environment: "{{ ghe_env }}"
-      command: 'python prune_snapshots.py'
+      command: "{{ playbook_path_output.stdout }}/{{ ansible_python_interpreter }} prune_snapshots.py"
