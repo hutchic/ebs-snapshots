@@ -1,9 +1,12 @@
-.PHONY: snapshots
+.PHONY: clean install snapshots
 SHELL = /bin/bash
 
-venv:
+clean:
+	rm -rf venv
+
+install:
 	test -d venv || virtualenv venv
 	venv/bin/pip install -r requirements.txt
 
-snapshots:
+snapshots: install
 	venv/bin/ansible-playbook snapshots.yml

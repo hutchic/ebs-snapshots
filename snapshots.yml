@@ -33,4 +33,4 @@
 
     - name: 'Delete older Github Enterprise snapshots'
       environment: "{{ ghe_env }}"
-      command: 'python clean_snapshots.py'
+      command: 'python prune_snapshots.py'
