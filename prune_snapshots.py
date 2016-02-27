@@ -4,7 +4,7 @@ from dateutil import parser
 from datetime import timedelta, datetime
 
 
-class GithubSnapshot(object):
+class PruneSnapshots(object):
 
     def __init__(self):
 	self.aws_region = os.getenv('AWS_REGION', 'us-east-1')
@@ -35,7 +35,7 @@ class GithubSnapshot(object):
 	self.ec2.delete_snapshot(snapshot.id)
 
 if __name__ == '__main__':
-    gh = GithubSnapshot()
+    gh = PruneSnapshots()
     snapshots = gh.find_old_snapshots()
     for snapshot in snapshots:
 	gh.delete_snapshot(snapshot)
