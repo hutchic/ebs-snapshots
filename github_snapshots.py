@@ -21,7 +21,7 @@ class GithubSnapshot(object):
 	old_snapshot_list = []
 	snapshot_filter = {
 	    "status": "completed",
-	    "tag:auto_expire": "true"
+	    "tag:expire": "true"
 	}
 	snapshots = self.ec2.get_all_snapshots(filters=snapshot_filter)
 	for snapshot in snapshots:

@@ -1,0 +1,12 @@
+- debug: var=volume
+
+- name: Take ec2 snapshots
+  ec2_snapshot:
+    snapshot_tags:
+      Name: "EBS Automated backup"
+      expire: "true"
+    region: "{{ lookup('env', 'AWS_REGION') | default('us-east-1', true) }}"
+    instance_id: "{{ volume.attachment_set.instance_id }}"
+    description: "EBS volume backup of {{ volume.attachment_set.device }} from {{ volume.attachment_set.instance_id }} taken on {{ ansible_date_time.iso8601 }}"
+    device_name: "{{ volume.attachment_set.device }}"
+    wait: "no"
