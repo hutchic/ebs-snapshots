@@ -1,5 +1,3 @@
-- debug: var=volume
-
 - name: Take ec2 snapshots
   ec2_snapshot:
     snapshot_tags:
