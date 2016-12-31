@@ -18,4 +18,4 @@ export AWS_REGION="us-east-1 is the default"
 make snapshots
 ```
 
-original credit: [Marvin Pinto](https://github.com/marvinpinto])
+original credit: [Marvin Pinto](https://github.com/marvinpinto)
